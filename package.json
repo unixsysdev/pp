@@ -9,7 +9,14 @@
     "dev": "ts-node src/compiler.ts",
     "test": "jest",
     "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts"
+    "format": "prettier --write src/**/*.ts",
+    "compile": "ts-node scripts/compile.ts",
+    "package:install": "ts-node src/cli/package-manager.ts install",
+    "package:publish": "ts-node src/cli/package-manager.ts publish",
+    "package:build": "ts-node src/cli/package-manager.ts build",
+    "examples:basic": "npm run dev examples/basic.ts",
+    "examples:async": "npm run dev examples/async/promises.el",
+    "examples:macros": "npm run dev examples/macros/basic.el"
   },
   "keywords": [
     "programming-language",

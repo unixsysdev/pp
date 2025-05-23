@@ -52,3 +52,311 @@ class BuiltinFunction extends Value {
   }
 }
 
+
+// Enhanced Standard Library Exports
+export * from './collections';
+
+// Add new built-in functions to the standard library
+export class EnhancedStandardLibrary extends StandardLibrary {
+  static getEnhancedBuiltins(): Map<string, Value> {
+    const builtins = StandardLibrary.getBuiltins();
+    
+    // Array operations
+    builtins.set('Array', new BuiltinFunction('Array', -1, (args: Value[]) => {
+      return new ArrayValue(args);
+    }));
+    
+    // Map operations
+    builtins.set('Map', new BuiltinFunction('Map', 0, () => {
+      return new MapValue();
+    }));
+    
+    // String utilities
+    builtins.set('split', new BuiltinFunction('split', 2, (args: Value[]) => {
+      const str = args[0] as StringValue;
+      const delimiter = args[1] as StringValue;
+      return StringUtils.split(str, delimiter);
+    }));
+    
+    // Math utilities
+    builtins.set('sqrt', new BuiltinFunction('sqrt', 1, (args: Value[]) => {
+      const num = args[0] as NumberValue;
+      return MathUtils.sqrt(num);
+    }));
+    
+    builtins.set('random', new BuiltinFunction('random', 0, () => {
+      return MathUtils.random();
+    }));
+    
+    // Time utilities
+    builtins.set('now', new BuiltinFunction('now', 0, () => {
+      return TimeValue.now();
+    }));
+    
+    return builtins;
+  }
+}
+
+// Enhanced Standard Library Exports
+export * from './collections';
+
+// Add new built-in functions to the standard library
+export class EnhancedStandardLibrary extends StandardLibrary {
+  static getEnhancedBuiltins(): Map<string, Value> {
+    const builtins = StandardLibrary.getBuiltins();
+    
+    // Array operations
+    builtins.set('Array', new BuiltinFunction('Array', -1, (args: Value[]) => {
+      return new ArrayValue(args);
+    }));
+    
+    // Map operations
+    builtins.set('Map', new BuiltinFunction('Map', 0, () => {
+      return new MapValue();
+    }));
+    
+    // String utilities
+    builtins.set('split', new BuiltinFunction('split', 2, (args: Value[]) => {
+      const str = args[0] as StringValue;
+      const delimiter = args[1] as StringValue;
+      return StringUtils.split(str, delimiter);
+    }));
+    
+    // Math utilities
+    builtins.set('sqrt', new BuiltinFunction('sqrt', 1, (args: Value[]) => {
+      const num = args[0] as NumberValue;
+      return MathUtils.sqrt(num);
+    }));
+    
+    builtins.set('random', new BuiltinFunction('random', 0, () => {
+      return MathUtils.random();
+    }));
+    
+    // Time utilities
+    builtins.set('now', new BuiltinFunction('now', 0, () => {
+      return TimeValue.now();
+    }));
+    
+    return builtins;
+  }
+}
+
+// Enhanced Standard Library Exports
+export * from './collections';
+
+// Add new built-in functions to the standard library
+export class EnhancedStandardLibrary extends StandardLibrary {
+  static getEnhancedBuiltins(): Map<string, Value> {
+    const builtins = StandardLibrary.getBuiltins();
+    
+    // Array operations
+    builtins.set('Array', new BuiltinFunction('Array', -1, (args: Value[]) => {
+      return new ArrayValue(args);
+    }));
+    
+    // Map operations
+    builtins.set('Map', new BuiltinFunction('Map', 0, () => {
+      return new MapValue();
+    }));
+    
+    // String utilities
+    builtins.set('split', new BuiltinFunction('split', 2, (args: Value[]) => {
+      const str = args[0] as StringValue;
+      const delimiter = args[1] as StringValue;
+      return StringUtils.split(str, delimiter);
+    }));
+    
+    // Math utilities
+    builtins.set('sqrt', new BuiltinFunction('sqrt', 1, (args: Value[]) => {
+      const num = args[0] as NumberValue;
+      return MathUtils.sqrt(num);
+    }));
+    
+    builtins.set('random', new BuiltinFunction('random', 0, () => {
+      return MathUtils.random();
+    }));
+    
+    // Time utilities
+    builtins.set('now', new BuiltinFunction('now', 0, () => {
+      return TimeValue.now();
+    }));
+    
+    return builtins;
+  }
+}
+
+// Enhanced Standard Library Exports
+export * from './collections';
+
+// Add new built-in functions to the standard library
+export class EnhancedStandardLibrary extends StandardLibrary {
+  static getEnhancedBuiltins(): Map<string, Value> {
+    const builtins = StandardLibrary.getBuiltins();
+    
+    // Array operations
+    builtins.set('Array', new BuiltinFunction('Array', -1, (args: Value[]) => {
+      return new ArrayValue(args);
+    }));
+    
+    // Map operations
+    builtins.set('Map', new BuiltinFunction('Map', 0, () => {
+      return new MapValue();
+    }));
+    
+    // String utilities
+    builtins.set('split', new BuiltinFunction('split', 2, (args: Value[]) => {
+      const str = args[0] as StringValue;
+      const delimiter = args[1] as StringValue;
+      return StringUtils.split(str, delimiter);
+    }));
+    
+    // Math utilities
+    builtins.set('sqrt', new BuiltinFunction('sqrt', 1, (args: Value[]) => {
+      const num = args[0] as NumberValue;
+      return MathUtils.sqrt(num);
+    }));
+    
+    builtins.set('random', new BuiltinFunction('random', 0, () => {
+      return MathUtils.random();
+    }));
+    
+    // Time utilities
+    builtins.set('now', new BuiltinFunction('now', 0, () => {
+      return TimeValue.now();
+    }));
+    
+    return builtins;
+  }
+}
+
+// Enhanced Standard Library Exports
+export * from './collections';
+
+// Add new built-in functions to the standard library
+export class EnhancedStandardLibrary extends StandardLibrary {
+  static getEnhancedBuiltins(): Map<string, Value> {
+    const builtins = StandardLibrary.getBuiltins();
+    
+    // Array operations
+    builtins.set('Array', new BuiltinFunction('Array', -1, (args: Value[]) => {
+      return new ArrayValue(args);
+    }));
+    
+    // Map operations
+    builtins.set('Map', new BuiltinFunction('Map', 0, () => {
+      return new MapValue();
+    }));
+    
+    // String utilities
+    builtins.set('split', new BuiltinFunction('split', 2, (args: Value[]) => {
+      const str = args[0] as StringValue;
+      const delimiter = args[1] as StringValue;
+      return StringUtils.split(str, delimiter);
+    }));
+    
+    // Math utilities
+    builtins.set('sqrt', new BuiltinFunction('sqrt', 1, (args: Value[]) => {
+      const num = args[0] as NumberValue;
+      return MathUtils.sqrt(num);
+    }));
+    
+    builtins.set('random', new BuiltinFunction('random', 0, () => {
+      return MathUtils.random();
+    }));
+    
+    // Time utilities
+    builtins.set('now', new BuiltinFunction('now', 0, () => {
+      return TimeValue.now();
+    }));
+    
+    return builtins;
+  }
+}
+
+// Enhanced Standard Library Exports
+export * from './collections';
+
+// Add new built-in functions to the standard library
+export class EnhancedStandardLibrary extends StandardLibrary {
+  static getEnhancedBuiltins(): Map<string, Value> {
+    const builtins = StandardLibrary.getBuiltins();
+    
+    // Array operations
+    builtins.set('Array', new BuiltinFunction('Array', -1, (args: Value[]) => {
+      return new ArrayValue(args);
+    }));
+    
+    // Map operations
+    builtins.set('Map', new BuiltinFunction('Map', 0, () => {
+      return new MapValue();
+    }));
+    
+    // String utilities
+    builtins.set('split', new BuiltinFunction('split', 2, (args: Value[]) => {
+      const str = args[0] as StringValue;
+      const delimiter = args[1] as StringValue;
+      return StringUtils.split(str, delimiter);
+    }));
+    
+    // Math utilities
+    builtins.set('sqrt', new BuiltinFunction('sqrt', 1, (args: Value[]) => {
+      const num = args[0] as NumberValue;
+      return MathUtils.sqrt(num);
+    }));
+    
+    builtins.set('random', new BuiltinFunction('random', 0, () => {
+      return MathUtils.random();
+    }));
+    
+    // Time utilities
+    builtins.set('now', new BuiltinFunction('now', 0, () => {
+      return TimeValue.now();
+    }));
+    
+    return builtins;
+  }
+}
+
+// Enhanced Standard Library Exports
+export * from './collections';
+
+// Add new built-in functions to the standard library
+export class EnhancedStandardLibrary extends StandardLibrary {
+  static getEnhancedBuiltins(): Map<string, Value> {
+    const builtins = StandardLibrary.getBuiltins();
+    
+    // Array operations
+    builtins.set('Array', new BuiltinFunction('Array', -1, (args: Value[]) => {
+      return new ArrayValue(args);
+    }));
+    
+    // Map operations
+    builtins.set('Map', new BuiltinFunction('Map', 0, () => {
+      return new MapValue();
+    }));
+    
+    // String utilities
+    builtins.set('split', new BuiltinFunction('split', 2, (args: Value[]) => {
+      const str = args[0] as StringValue;
+      const delimiter = args[1] as StringValue;
+      return StringUtils.split(str, delimiter);
+    }));
+    
+    // Math utilities
+    builtins.set('sqrt', new BuiltinFunction('sqrt', 1, (args: Value[]) => {
+      const num = args[0] as NumberValue;
+      return MathUtils.sqrt(num);
+    }));
+    
+    builtins.set('random', new BuiltinFunction('random', 0, () => {
+      return MathUtils.random();
+    }));
+    
+    // Time utilities
+    builtins.set('now', new BuiltinFunction('now', 0, () => {
+      return TimeValue.now();
+    }));
+    
+    return builtins;
+  }
+}
