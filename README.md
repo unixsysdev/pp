@@ -69,11 +69,11 @@ match result {
 
 - [x] Phase 1: Lexer, parser, and basic type checking
 - [x] Phase 2: Interpreter for simple programs
-- [ ] Phase 3: Standard library expansion
-- [ ] Phase 4: Advanced concurrency primitives
-- [ ] Phase 5: Package manager and build tools
-- [ ] Phase 6: LLVM code generation
-- [ ] Phase 7: Metaprogramming and macros
+- [x] Phase 3: Standard library expansion
+- [x] Phase 4: Advanced concurrency primitives
+- [x] Phase 5: Package manager and build tools
+- [x] Phase 6: LLVM code generation
+- [x] Phase 7: Metaprogramming and macros
 - [ ] Phase 8: Performance optimizations
 - [ ] Phase 9: Enterprise tooling and IDE support
 - [ ] Phase 10: Production ecosystem
