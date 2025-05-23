@@ -1,11 +1,10 @@
-// Factorial example in Enterprise Lang
+// Factorial example
 fn factorial(n: number) -> number {
-    if (n <= 1) {
-        1;
-    } else {
-        n * factorial(n - 1);
-    }
+  if n == 0 {
+    1;
+  } else {
+    n * factorial(n - 1);
+  }
 }
 
 let result: number = factorial(5);
-print(result);

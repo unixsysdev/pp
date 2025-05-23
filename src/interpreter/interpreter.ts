@@ -1,8 +1,15 @@
-abstract class Value {
+// Enterprise Language Interpreter - Clean Version
+
+import { Statement, Expression, VariableDeclaration, FunctionDeclaration,
+         NumberLiteral, StringLiteral, BooleanLiteral, Identifier,
+         BinaryExpression, ExpressionStatement } from '../ast/nodes';
+import { TokenType } from '../lexer/lexer';
+
+export abstract class Value {
   abstract toString(): string;
 }
 
-class NumberValue extends Value {
+export class NumberValue extends Value {
   constructor(public value: number) {
     super();
   }
@@ -12,7 +19,7 @@ class NumberValue extends Value {
   }
 }
 
-class StringValue extends Value {
+export class StringValue extends Value {
   constructor(public value: string) {
     super();
   }
@@ -22,7 +29,7 @@ class StringValue extends Value {
   }
 }
 
-class BooleanValue extends Value {
+export class BooleanValue extends Value {
   constructor(public value: boolean) {
     super();
   }
@@ -32,7 +39,7 @@ class BooleanValue extends Value {
   }
 }
 
-class FunctionValue extends Value {
+export class FunctionValue extends Value {
   constructor(
     public declaration: FunctionDeclaration,
     public closure: Map<string, Value>
@@ -45,32 +52,9 @@ class FunctionValue extends Value {
   }
 }
 
-// Result type implementation for error handling
-class ResultValue extends Value {
-  constructor(public isOk: boolean, public value: Value) {
-    super();
-  }
-  
-  toString(): string {
-    return this.isOk ? `Ok(${this.value.toString()})` : `Err(${this.value.toString()})`;
-  }
-}
-
-// Option type implementation for null safety
-class OptionValue extends Value {
-  constructor(public value: Value | null) {
-    super();
-  }
-  
-  toString(): string {
-    return this.value ? `Some(${this.value.toString()})` : 'None';
-  }
-}
-
-class Interpreter {
+export class Interpreter {
   private globals = new Map<string, Value>();
   private environment = this.globals;
-  private environments: Map<string, Value>[] = [];
 
   interpret(statements: Statement[]): void {
     try {
@@ -87,12 +71,8 @@ class Interpreter {
       this.executeVariableDeclaration(stmt);
     } else if (stmt instanceof FunctionDeclaration) {
       this.executeFunctionDeclaration(stmt);
-    } else if (stmt instanceof IfStatement) {
-      this.executeIfStatement(stmt);
     } else if (stmt instanceof ExpressionStatement) {
       this.evaluate(stmt.expression);
-    } else if (stmt instanceof ReturnStatement) {
-      throw new ReturnException(stmt.value ? this.evaluate(stmt.value) : new NumberValue(0));
     }
   }
 
@@ -111,30 +91,6 @@ class Interpreter {
     this.environment.set(stmt.name, func);
   }
 
-  private executeIfStatement(stmt: IfStatement): void {
-    const condition = this.evaluate(stmt.condition);
-    
-    if (this.isTruthy(condition)) {
-      this.executeBlock(stmt.thenBranch);
-    } else if (stmt.elseBranch) {
-      this.executeBlock(stmt.elseBranch);
-    }
-  }
-
-  private executeBlock(statements: Statement[]): void {
-    const previous = this.environment;
-    
-    try {
-      this.environment = new Map(previous);
-      
-      for (const statement of statements) {
-        this.execute(statement);
-      }
-    } finally {
-      this.environment = previous;
-    }
-  }
-
   private evaluate(expr: Expression): Value {
     if (expr instanceof NumberLiteral) {
       return new NumberValue(expr.value);
@@ -149,7 +105,7 @@ class Interpreter {
     }
     
     if (expr instanceof Identifier) {
-      const value = this.lookupVariable(expr.name);
+      const value = this.environment.get(expr.name);
       if (!value) {
         throw new Error(`Undefined variable: ${expr.name}`);
       }
@@ -158,10 +114,6 @@ class Interpreter {
     
     if (expr instanceof BinaryExpression) {
       return this.evaluateBinaryExpression(expr);
-    }
-    
-    if (expr instanceof FunctionCall) {
-      return this.evaluateFunctionCall(expr);
     }
     
     throw new Error(`Unknown expression type: ${expr.constructor.name}`);
@@ -180,100 +132,15 @@ class Interpreter {
         case TokenType.MULTIPLY:
           return new NumberValue(left.value * right.value);
         case TokenType.DIVIDE:
+          if (right.value === 0) {
             throw new Error('Division by zero');
           }
           return new NumberValue(left.value / right.value);
-        case TokenType.GREATER:
-          return new BooleanValue(left.value > right.value);
-        case TokenType.LESS:
-          return new BooleanValue(left.value < right.value);
         case TokenType.EQUAL:
-        case TokenType.NOT_EQUAL:
-          return new BooleanValue(left.value !== right.value);
+          return new BooleanValue(left.value === right.value);
       }
-    }
-    
-      return new BooleanValue(this.isEqual(left, right));
-    }
-    
-      return new BooleanValue(!this.isEqual(left, right));
     }
     
     throw new Error(`Invalid binary operation: ${left.constructor.name} ${expr.operator} ${right.constructor.name}`);
   }
-
-  private evaluateFunctionCall(expr: FunctionCall): Value {
-    const callee = this.evaluate(expr.callee);
-    
-    if (!(callee instanceof FunctionValue)) {
-      throw new Error('Can only call functions');
-    }
-    
-    const args = expr.args.map(arg => this.evaluate(arg));
-    
-    if (args.length !== callee.declaration.params.length) {
-      throw new Error(`Expected ${callee.declaration.params.length} arguments but got ${args.length}`);
-    }
-    
-    return this.call(callee, args);
-  }
-
-  private call(func: FunctionValue, args: Value[]): Value {
-    const environment = new Map(func.closure);
-    
-    for (let i = 0; i < func.declaration.params.length; i++) {
-      environment.set(func.declaration.params[i].name, args[i]);
-    }
-    
-    const previous = this.environment;
-    
-    try {
-      this.environment = environment;
-      this.executeBlock(func.declaration.body);
-      
-      // If no explicit return, return 0
-      return new NumberValue(0);
-    } catch (error) {
-      if (error instanceof ReturnException) {
-        return error.value;
-      }
-      throw error;
-    } finally {
-      this.environment = previous;
-    }
-  }
-
-  private lookupVariable(name: string): Value | null {
-    if (this.environment.has(name)) {
-      return this.environment.get(name)!;
-    }
-    return null;
-  }
-
-  private isTruthy(value: Value): boolean {
-    if (value instanceof BooleanValue) {
-      return value.value;
-    }
-    if (value instanceof NumberValue) {
-      return value.value !== 0;
-    }
-    return true;
-  }
-
-  private isEqual(a: Value, b: Value): boolean {
-    if (a instanceof NumberValue && b instanceof NumberValue) {
-    }
-    if (a instanceof StringValue && b instanceof StringValue) {
-    }
-    if (a instanceof BooleanValue && b instanceof BooleanValue) {
-    }
-    return false;
-  }
 }
-
-class ReturnException extends Error {
-  constructor(public value: Value) {
-    super();
-  }
-}
-

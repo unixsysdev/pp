@@ -8,15 +8,8 @@
     "start": "node dist/compiler.js",
     "dev": "ts-node src/compiler.ts",
     "test": "jest",
-    "lint": "eslint src/**/*.ts",
-    "format": "prettier --write src/**/*.ts",
-    "compile": "ts-node scripts/compile.ts",
-    "package:install": "ts-node src/cli/package-manager.ts install",
-    "package:publish": "ts-node src/cli/package-manager.ts publish",
-    "package:build": "ts-node src/cli/package-manager.ts build",
-    "examples:basic": "npm run dev examples/basic.ts",
-    "examples:async": "npm run dev examples/async/promises.el",
-    "examples:macros": "npm run dev examples/macros/basic.el"
+    "lint": "eslint src --ext .ts --fix",
+    "format": "prettier --write src/**/*.ts"
   },
   "keywords": [
     "programming-language",
@@ -28,13 +21,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.0.0",
-    "jest": "^29.0.0",
-    "prettier": "^3.0.0",
-    "ts-jest": "^29.0.0",
+    "typescript": "^5.0.0",
     "ts-node": "^10.0.0",
-    "typescript": "^5.0.0"
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
   }
 }

@@ -1,142 +1,56 @@
-.PHONY: build test clean install dev
-
-# Build the project
-build:
-	npm run build
+.PHONY: build test clean install dev lint format
 
 # Install dependencies
 install:
 	npm install
 
-# Run in development mode
-dev:
-	npm run dev
+# Build the project
+build:
+	npm run build
 
 # Run tests
 test:
 	npm test
 
-# Clean build artifacts
-clean:
-	rm -rf dist/ node_modules/
-
-# Format code
-format:
-	npm run format
+# Run in development mode
+dev:
+	npm run dev
 
 # Lint code
 lint:
 	npm run lint
 
-# Run example programs
-examples:
-	npm run dev examples/factorial.el
-	npm run dev examples/fibonacci.el
-
-# Initialize git repository
-git-init:
-	git init
-	git add .
-	git commit -m "Initial commit: Enterprise Programming Language prototype"
-
-# Advanced build targets
-
-# Install enhanced dependencies
-install-dev:
-	npm install --save-dev @types/vscode vscode-languageserver vscode-languageserver-textdocument
-
-# Run advanced tests
-test-all:
-	npm test -- --coverage tests/stdlib tests/concurrency tests/package
-
 # Format code
-format-check:
-	npm run format -- --check
+format:
+	npm run format
 
-# Run linter with advanced rules
-lint-strict:
-	npm run lint -- --max-warnings 0
+# Clean build artifacts
+clean:
+	rm -rf dist/ node_modules/ coverage/
 
-# Build LLVM backend (requires LLVM installed)
-build-llvm:
-	npm run compile examples/compilation/hello.el hello_world
+# Full setup
+setup: install build test
+	@echo "✅ Enterprise Language setup complete!"
 
-# Run language server
-lsp:
-	ts-node tools/lsp/server.ts
+# Run examples
+examples:
+	@echo "Running examples..."
+	npm run dev examples/simple.el
+	npm run dev examples/factorial.el
 
-# Run package manager commands
-package-demo:
-	npm run package:build compile
-	npm run package:build test
+# Type check
+typecheck:
+	npx tsc --noEmit
 
-# Run all async examples
-examples-async:
-	npm run dev examples/async/promises.el
-	npm run dev examples/async/actors.el
+# CI simulation
+ci: install typecheck lint test build
+	@echo "✅ CI simulation passed!"
 
-# Run all macro examples
-examples-macros:
-	npm run dev examples/macros/basic.el
-	npm run dev examples/macros/derive.el
-
-# Performance benchmarks
-benchmark:
-	@echo "Running performance benchmarks..."
-	time npm run dev examples/fibonacci.el
-	time npm run dev examples/factorial.el
-
-# Generate documentation
-docs:
-	@echo "Generating documentation..."
-	mkdir -p docs/generated
-	typedoc --out docs/generated src/
-
-# Clean all build artifacts
-clean-all: clean
-	rm -rf docs/generated coverage/
-
-# Full development setup
-setup-dev: install install-dev
-	@echo "Development environment ready!"
-	@echo "Available commands:"
-	@echo "  make examples-async    - Run async examples"
-	@echo "  make examples-macros   - Run macro examples"
-	@echo "  make test-all         - Run comprehensive tests"
-	@echo "  make build-llvm       - Build with LLVM backend"
-	@echo "  make lsp              - Start language server"
-	@echo "  make docs             - Generate documentation"
-
-# CI-specific targets
-ci-install:
-	@if [ -f package-lock.json ]; then \
-		npm ci; \
-	else \
-		npm install; \
-	fi
-
-ci-test:
-	npm test || echo "Tests completed with issues"
-
-ci-lint:
-	npm run lint || echo "Linting completed with issues"
-
-ci-build:
-	npm run build
-
-# Quick verification that basic functionality works
-verify:
-	@echo "Verifying basic functionality..."
-	npm run build
-	@echo "✅ Build successful"
-	npm test
-	@echo "✅ Tests passed"
-
-# Generate package-lock.json if missing
-lock:
-	@if [ ! -f package-lock.json ]; then \
-		echo "Generating package-lock.json..."; \
-		npm install; \
-	else \
-		echo "package-lock.json already exists"; \
-	fi
+# Development setup
+dev-setup: install
+	@echo "🚀 Development environment ready!"
+	@echo "Commands available:"
+	@echo "  make build    - Build the project"
+	@echo "  make test     - Run tests"
+	@echo "  make examples - Run example programs"
+	@echo "  make ci       - Simulate CI pipeline"

@@ -1,41 +1,41 @@
-// AST NODES
+// Enterprise Language AST Nodes - Clean Version
 
-abstract class ASTNode {}
+import { Type } from '../types/types';
+import { TokenType } from '../lexer/lexer';
 
-abstract class Expression extends ASTNode {
+export abstract class ASTNode {}
+
+export abstract class Expression extends ASTNode {
   type?: Type;
 }
 
-abstract class Statement extends ASTNode {}
+export abstract class Statement extends ASTNode {}
 
-class NumberLiteral extends Expression {
+export class NumberLiteral extends Expression {
   constructor(public value: number) {
     super();
-    this.type = new PrimitiveType('number');
   }
 }
 
-class StringLiteral extends Expression {
+export class StringLiteral extends Expression {
   constructor(public value: string) {
     super();
-    this.type = new PrimitiveType('string');
   }
 }
 
-class BooleanLiteral extends Expression {
+export class BooleanLiteral extends Expression {
   constructor(public value: boolean) {
     super();
-    this.type = new PrimitiveType('boolean');
   }
 }
 
-class Identifier extends Expression {
+export class Identifier extends Expression {
   constructor(public name: string) {
     super();
   }
 }
 
-class BinaryExpression extends Expression {
+export class BinaryExpression extends Expression {
   constructor(
     public left: Expression,
     public operator: TokenType,
@@ -45,13 +45,13 @@ class BinaryExpression extends Expression {
   }
 }
 
-class FunctionCall extends Expression {
+export class FunctionCall extends Expression {
   constructor(public callee: Expression, public args: Expression[]) {
     super();
   }
 }
 
-class VariableDeclaration extends Statement {
+export class VariableDeclaration extends Statement {
   constructor(
     public name: string,
     public typeAnnotation: Type | null,
@@ -62,7 +62,7 @@ class VariableDeclaration extends Statement {
   }
 }
 
-class FunctionDeclaration extends Statement {
+export class FunctionDeclaration extends Statement {
   constructor(
     public name: string,
     public params: { name: string; type: Type }[],
@@ -73,7 +73,7 @@ class FunctionDeclaration extends Statement {
   }
 }
 
-class IfStatement extends Statement {
+export class IfStatement extends Statement {
   constructor(
     public condition: Expression,
     public thenBranch: Statement[],
@@ -83,15 +83,14 @@ class IfStatement extends Statement {
   }
 }
 
-class ReturnStatement extends Statement {
+export class ReturnStatement extends Statement {
   constructor(public value: Expression | null) {
     super();
   }
 }
 
-class ExpressionStatement extends Statement {
+export class ExpressionStatement extends Statement {
   constructor(public expression: Expression) {
     super();
   }
 }
-

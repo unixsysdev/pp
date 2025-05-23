@@ -1,9 +1,9 @@
-// Main entry point for the Enterprise Language
-export * from './lexer/lexer';
-export * from './types/types';
+// Main entry point for Enterprise Language
+export { Lexer, TokenType } from './lexer/lexer';
+export { Parser } from './parser/parser';
+export { Interpreter, Value, NumberValue, StringValue, BooleanValue } from './interpreter/interpreter';
+export { Type, PrimitiveType, FunctionType } from './types/types';
+export { Compiler } from './compiler';
+
+// AST Nodes
 export * from './ast/nodes';
-export * from './parser/parser';
-export * from './checker/typeChecker';
-export * from './interpreter/interpreter';
-export * from './stdlib/stdlib';
-export * from './compiler';

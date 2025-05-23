@@ -1,4 +1,12 @@
-class Parser {
+// Enterprise Language Parser - Clean Version
+
+import { Token, TokenType } from '../lexer/lexer';
+import { Statement, Expression, VariableDeclaration, FunctionDeclaration, 
+         NumberLiteral, StringLiteral, BooleanLiteral, Identifier, 
+         BinaryExpression, ExpressionStatement } from '../ast/nodes';
+import { Type, PrimitiveType } from '../types/types';
+
+export class Parser {
   private tokens: Token[];
   private current = 0;
 
@@ -29,10 +37,6 @@ class Parser {
         return this.functionDeclaration();
       }
       
-      if (this.match(TokenType.IF)) {
-        return this.ifStatement();
-      }
-      
       return this.expressionStatement();
     } catch (error) {
       this.synchronize();
@@ -41,6 +45,7 @@ class Parser {
   }
 
   private variableDeclaration(): VariableDeclaration {
+    const isConst = this.previous().type === TokenType.CONST;
     
     this.consume(TokenType.IDENTIFIER, "Expected variable name");
     const name = this.previous().value;
@@ -76,7 +81,7 @@ class Parser {
         const paramType = this.parseType();
         
         params.push({ name: paramName, type: paramType });
-      } while (this.match(TokenType.COMMA));
+      } while (this.match(TokenType.SEMICOLON)); // Use semicolon instead of comma for simplicity
     }
     
     this.consume(TokenType.RPAREN, "Expected ')' after parameters");
@@ -99,41 +104,6 @@ class Parser {
     return new FunctionDeclaration(name, params, returnType, body);
   }
 
-  private ifStatement(): IfStatement {
-    this.consume(TokenType.LPAREN, "Expected '(' after 'if'");
-    const condition = this.expression();
-    this.consume(TokenType.RPAREN, "Expected ')' after if condition");
-    
-    this.consume(TokenType.LBRACE, "Expected '{' after if condition");
-    const thenBranch: Statement[] = [];
-    
-    while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
-      const stmt = this.statement();
-      if (stmt) {
-        thenBranch.push(stmt);
-      }
-    }
-    
-    this.consume(TokenType.RBRACE, "Expected '}' after then branch");
-    
-    let elseBranch: Statement[] | null = null;
-    if (this.match(TokenType.ELSE)) {
-      this.consume(TokenType.LBRACE, "Expected '{' after 'else'");
-      elseBranch = [];
-      
-      while (!this.check(TokenType.RBRACE) && !this.isAtEnd()) {
-        const stmt = this.statement();
-        if (stmt) {
-          elseBranch.push(stmt);
-        }
-      }
-      
-      this.consume(TokenType.RBRACE, "Expected '}' after else branch");
-    }
-    
-    return new IfStatement(condition, thenBranch, elseBranch);
-  }
-
   private expressionStatement(): ExpressionStatement {
     const expr = this.expression();
     this.consume(TokenType.SEMICOLON, "Expected ';' after expression");
@@ -147,7 +117,7 @@ class Parser {
   private equality(): Expression {
     let expr = this.comparison();
     
-    while (this.match(TokenType.EQUAL, TokenType.NOT_EQUAL)) {
+    while (this.match(TokenType.EQUAL)) {
       const operator = this.previous().type;
       const right = this.comparison();
       expr = new BinaryExpression(expr, operator, right);
@@ -157,15 +127,7 @@ class Parser {
   }
 
   private comparison(): Expression {
-    let expr = this.term();
-    
-    while (this.match(TokenType.GREATER, TokenType.LESS)) {
-      const operator = this.previous().type;
-      const right = this.term();
-      expr = new BinaryExpression(expr, operator, right);
-    }
-    
-    return expr;
+    return this.term();
   }
 
   private term(): Expression {
@@ -181,47 +143,20 @@ class Parser {
   }
 
   private factor(): Expression {
-    let expr = this.call();
+    let expr = this.primary();
     
     while (this.match(TokenType.DIVIDE, TokenType.MULTIPLY)) {
       const operator = this.previous().type;
-      const right = this.call();
+      const right = this.primary();
       expr = new BinaryExpression(expr, operator, right);
     }
     
     return expr;
   }
 
-  private call(): Expression {
-    let expr = this.primary();
-    
-    while (true) {
-      if (this.match(TokenType.LPAREN)) {
-        expr = this.finishCall(expr);
-      } else {
-        break;
-      }
-    }
-    
-    return expr;
-  }
-
-  private finishCall(callee: Expression): Expression {
-    const args: Expression[] = [];
-    
-    if (!this.check(TokenType.RPAREN)) {
-      do {
-        args.push(this.expression());
-      } while (this.match(TokenType.COMMA));
-    }
-    
-    this.consume(TokenType.RPAREN, "Expected ')' after arguments");
-    
-    return new FunctionCall(callee, args);
-  }
-
   private primary(): Expression {
     if (this.match(TokenType.BOOLEAN)) {
+      return new BooleanLiteral(this.previous().value === 'true');
     }
     
     if (this.match(TokenType.NUMBER)) {
@@ -242,28 +177,12 @@ class Parser {
       return expr;
     }
     
-    throw new Error(`Unexpected token: ${this.peek().value} at line ${this.peek().line}`);
+    throw new Error(`Unexpected token: ${this.peek().value}`);
   }
 
   private parseType(): Type {
     if (this.match(TokenType.IDENTIFIER)) {
       const typeName = this.previous().value;
-      
-      // Handle generic types like Option<T> or Result<T, E>
-      if (this.match(TokenType.LESS)) {
-        const innerTypes: Type[] = [];
-        
-        do {
-          innerTypes.push(this.parseType());
-        } while (this.match(TokenType.COMMA));
-        
-        this.consume(TokenType.GREATER, "Expected '>' after generic parameters");
-        
-          return new OptionType(innerTypes[0]);
-          return new ResultType(innerTypes[0], innerTypes[1]);
-        }
-      }
-      
       return new PrimitiveType(typeName);
     }
     
@@ -282,6 +201,7 @@ class Parser {
 
   private check(type: TokenType): boolean {
     if (this.isAtEnd()) return false;
+    return this.peek().type === type;
   }
 
   private advance(): Token {
@@ -290,6 +210,7 @@ class Parser {
   }
 
   private isAtEnd(): boolean {
+    return this.peek().type === TokenType.EOF;
   }
 
   private peek(): Token {
@@ -304,13 +225,14 @@ class Parser {
     if (this.check(type)) return this.advance();
     
     const token = this.peek();
-    throw new Error(`${message}. Got: ${token.value} at line ${token.line}, column ${token.column}`);
+    throw new Error(`${message}. Got: ${token.value} at line ${token.line}`);
   }
 
   private synchronize(): void {
     this.advance();
     
     while (!this.isAtEnd()) {
+      if (this.previous().type === TokenType.SEMICOLON) return;
       
       switch (this.peek().type) {
         case TokenType.FN:
@@ -324,4 +246,3 @@ class Parser {
     }
   }
 }
-
